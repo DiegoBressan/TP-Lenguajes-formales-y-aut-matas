@@ -5,6 +5,7 @@ cadenamodif = cadena.split("\n")
 cadenafirst = []
 antecedentes = []
 variable = []
+FIRST = []
 for x in range(len(cadenamodif)):
     if cadenamodif[x] is not None:
         antecedentes.append((cadenamodif[x])[0])
@@ -25,12 +26,46 @@ for x in range(len(cadenamodif)):
                 else:
                     if variable2[0] == ':lambda':
                         cadenafirst.append("lambda")
-                        break;
+                        break
             if band == 0:
                 letra = ":" + cadenaminmayus[y]
                 if letra == variable[0]:
                     cadenafirst.append(cadenaminmayus[y])
+                    break
+for z in range(0, len(cadenafirst)):
+    variable = []
+    if (ord(cadenafirst[z][0]) >= 97 and ord(cadenafirst[z][0]) <= 107) or (ord(cadenafirst[z][0]) >= 109 and ord(cadenafirst[z][0]) <= 122):
+        FIRST.append(cadenafirst[z])
+    else:
+        if ord(cadenafirst[z][0]) == 108:
+            variable = re.findall(r'l.....', cadenafirst[z])
+            if variable == []:
+                FIRST.append(cadenafirst[z])
+            else:
+                if variable[0] == 'lambda':
+                    FIRST.append('lambda')
+        else:
+            letramayuscula = cadenafirst[z][0]
+            let = ''
+            for m in range(len(antecedentes)):
+                if antecedentes[m] == letramayuscula:
+                    variable = re.findall(r'l.....', cadenafirst[m])
+                    if variable == []:
+                        if cadenafirst[m] is not letramayuscula:
+                            let = let + cadenafirst[m]
+                    else:
+                        if variable[0] == 'lambda':
+                            for r in range(len(cadenamodif)):
+                                if cadenamodif[r][2] == letramayuscula:
+                                    sig = re.findall(r':...', cadenamodif[r])
+                                    if (ord(sig[0][3]) >= 97 and ord(sig[0][3]) <= 122):
+                                        let = let + sig[0][3]
+                                    else:
+                                        letramayuscula = sig[0][3]
+                                        break
+            FIRST.append(let)
 
+print(FIRST)
 print(antecedentes,cadenafirst)
 
 class Gramatica():
