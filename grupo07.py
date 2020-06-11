@@ -9,20 +9,27 @@ for x in range(len(cadenamodif)):
     if cadenamodif[x] is not None:
         antecedentes.append((cadenamodif[x])[0])
         co = 0
+        band = 0
         for y in range(len(cadenaminmayus)):
             co = co + 1
             if co == 1:
                 variable = []
             variable = re.findall(r':.', cadenamodif[x])
-            letra = ":" + cadenaminmayus[y]
-            if letra == variable[0]:
-                cadenafirst.append(cadenaminmayus[y])
-            else:
-                if variable[0] == ':l':
-                    variable2 = re.findall(r':......', cadenamodif[x])
+            if variable[0] == ':l':
+                variable2 = re.findall(r':......', cadenamodif[x])
+                if variable2 == []:
+                    letra = ":" + cadenaminmayus[y]
+                    if letra == variable[0]:
+                        cadenafirst.append(cadenaminmayus[y])
+                        band = 1
+                else:
                     if variable2[0] == ':lambda':
                         cadenafirst.append("lambda")
                         break;
+            if band == 0:
+                letra = ":" + cadenaminmayus[y]
+                if letra == variable[0]:
+                    cadenafirst.append(cadenaminmayus[y])
 
 print(antecedentes,cadenafirst)
 
