@@ -1,5 +1,33 @@
+import re
+cadena = "A:b A\nA:a\nA:A B c\nA:lambda\nB:b"
+cadenaminmayus = "a", "b", "c", "d", "e", "l", "A", "B", "C", "D", "E"
+cadenamodif = cadena.split("\n")
+cadenafirst = []
+antecedentes = []
+variable = []
+for x in range(len(cadenamodif)):
+    if cadenamodif[x] is not None:
+        antecedentes.append((cadenamodif[x])[0])
+        co = 0
+        for y in range(len(cadenaminmayus)):
+            co = co + 1
+            if co == 1:
+                variable = []
+            variable = re.findall(r':.', cadenamodif[x])
+            letra = ":" + cadenaminmayus[y]
+            if letra == variable[0]:
+                cadenafirst.append(cadenaminmayus[y])
+            else:
+                if variable[0] == ':l':
+                    variable2 = re.findall(r':......', cadenamodif[x])
+                    if variable2[0] == ':lambda':
+                        cadenafirst.append("lambda")
+                        break;
+
+print(antecedentes,cadenafirst)
 
 class Gramatica():
+
     def __init__(self, gramatica):
         """Constructor de la clase.
 
@@ -15,7 +43,7 @@ class Gramatica():
 
         pass
 
-    def isLL1(self):
+    def isLL1(self, Gramatica):
         """Verifica si una gramática permite realizar derivaciones utilizando
            la técnica LL1.
 
@@ -24,7 +52,10 @@ class Gramatica():
         resultado : bool
             Indica si la gramática es o no LL1.
         """
-        pass
+        cadena = Gramatica
+
+        cadena.split("/n")
+        return
 
     def parse(self, cadena):
         """Retorna la derivación para una cadena dada utilizando las
@@ -46,3 +77,4 @@ class Gramatica():
             utilizando la gramática.
         """
         pass
+
