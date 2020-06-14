@@ -6,67 +6,54 @@ cadenafirst = []
 antecedentes = []
 variable = []
 FIRST = []
+
+"""        First           """
+
+"""     First de los que el primer valor en el consecuente es un Terminal o lambda      """
 for x in range(len(cadenamodif)):
     if cadenamodif[x] is not None:
-        antecedentes.append((cadenamodif[x])[0])
-        co = 0
-        band = 0
-        for y in range(len(cadenaminmayus)):
-            co = co + 1
-            if co == 1:
-                variable = []
-            variable = re.findall(r':.', cadenamodif[x])
-            if variable[0] == ':l':
-                variable2 = re.findall(r':......', cadenamodif[x])
-                if variable2 == []:
-                    letra = ":" + cadenaminmayus[y]
-                    if letra == variable[0]:
-                        cadenafirst.append(cadenaminmayus[y])
-                        band = 1
-                else:
-                    if variable2[0] == ':lambda':
-                        cadenafirst.append("lambda")
-                        break
-            if band == 0:
-                letra = ":" + cadenaminmayus[y]
-                if letra == variable[0]:
-                    cadenafirst.append(cadenaminmayus[y])
-                    break
-for z in range(0, len(cadenafirst)):
-    variable = []
-    if (ord(cadenafirst[z][0]) >= 97 and ord(cadenafirst[z][0]) <= 107) or (ord(cadenafirst[z][0]) >= 109 and ord(cadenafirst[z][0]) <= 122):
-        FIRST.append(cadenafirst[z])
-    else:
-        if ord(cadenafirst[z][0]) == 108:
-            variable = re.findall(r'l.....', cadenafirst[z])
-            if variable == []:
-                FIRST.append(cadenafirst[z])
+        antecedentes.append(cadenamodif[x][0])
+        variable = re.findall(r':.', cadenamodif[x])
+        if variable[0] == ':l':
+            variable2 = re.findall(r':......', cadenamodif[x])
+            if variable2[0] == ':lambda':
+                FIRST.append('lambda')
             else:
-                if variable[0] == 'lambda':
-                    FIRST.append('lambda')
+                FIRST.append(variable[0][1])
         else:
-            letramayuscula = cadenafirst[z][0]
-            let = ''
-            for m in range(len(antecedentes)):
-                if antecedentes[m] == letramayuscula:
-                    variable = re.findall(r'l.....', cadenafirst[m])
-                    if variable == []:
-                        if cadenafirst[m] is not letramayuscula:
-                            let = let + cadenafirst[m]
+            if (ord(variable[0][1]) > 32 and ord(variable[0][1]) < 65) or (ord(variable[0][1]) > 90 and ord(variable[0][1]) < 127):
+                FIRST.append(variable[0][1])
+
+"""     Calcula los First de los que el primer valor en el consecuente es un No Terminal  """
+for x in range(0, len(cadenamodif)):
+    variable = re.findall(r':.', cadenamodif[x])
+    co = 1
+    let = ''
+    ban = 0
+    while ban == 0:
+        if (ord(variable[0][co]) > 64) and (ord(variable[0][co]) < 91):
+            variable2 = variable[0][co]
+            co = 1
+            for y in range(0, len(antecedentes)):
+                if variable2 == antecedentes[y]:
+                    if FIRST[y] == 'lambda':
+                        co = co + 2
                     else:
-                        if variable[0] == 'lambda':
-                            for r in range(len(cadenamodif)):
-                                if cadenamodif[r][2] == letramayuscula:
-                                    sig = re.findall(r':...', cadenamodif[r])
-                                    if (ord(sig[0][3]) >= 97 and ord(sig[0][3]) <= 122):
-                                        let = let + sig[0][3]
-                                    else:
-                                        letramayuscula = sig[0][3]
-                                        break
-            FIRST.append(let)
+                        band = 0
+                        ban = 1
+                        for z in range(len(let)):
+                            if FIRST[y] == let[z]:
+                                band = 1
+                                break
+                        if band == 0:
+                            let = let + FIRST[y]
+        else:
+            ban = 1
+    if let != '':
+        FIRST.insert(x, let)
 
 print(FIRST)
-print(antecedentes,cadenafirst)
+print(antecedentes)
 
 class Gramatica():
 
@@ -97,6 +84,7 @@ class Gramatica():
         cadena = Gramatica
 
         cadena.split("/n")
+
         return
 
     def parse(self, cadena):
