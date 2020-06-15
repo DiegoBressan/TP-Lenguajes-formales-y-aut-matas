@@ -12,45 +12,50 @@ FIRST = []
 """     First de los que el primer valor en el consecuente es un Terminal o lambda      """
 for x in range(len(cadenamodif)):
     if cadenamodif[x] is not None:
-        antecedentes.append(cadenamodif[x][0])
+        antecedentes.insert(x, cadenamodif[x][0])
         variable = re.findall(r':.', cadenamodif[x])
         if variable[0] == ':l':
             variable2 = re.findall(r':......', cadenamodif[x])
             if variable2[0] == ':lambda':
-                FIRST.append('lambda')
+                FIRST.insert(x, 'lambda')
             else:
-                FIRST.append(variable[0][1])
+                FIRST.insert(x, variable[0][1])
         else:
             if (ord(variable[0][1]) > 32 and ord(variable[0][1]) < 65) or (ord(variable[0][1]) > 90 and ord(variable[0][1]) < 127):
-                FIRST.append(variable[0][1])
+                FIRST.insert(x, variable[0][1])
+            else:
+                FIRST.insert(x, '-')
 
 """     Calcula los First de los que el primer valor en el consecuente es un No Terminal  """
-for x in range(0, len(cadenamodif)):
-    variable = re.findall(r':.', cadenamodif[x])
-    co = 1
-    let = ''
-    ban = 0
-    while ban == 0:
-        if (ord(variable[0][co]) > 64) and (ord(variable[0][co]) < 91):
-            variable2 = variable[0][co]
-            co = 1
-            for y in range(0, len(antecedentes)):
-                if variable2 == antecedentes[y]:
-                    if FIRST[y] == 'lambda':
-                        co = co + 2
-                    else:
-                        band = 0
-                        ban = 1
-                        for z in range(len(let)):
-                            if FIRST[y] == let[z]:
-                                band = 1
-                                break
-                        if band == 0:
-                            let = let + FIRST[y]
-        else:
-            ban = 1
-    if let != '':
-        FIRST.insert(x, let)
+conta = 0
+while conta != 2:
+    conta = conta + 1
+    for x in range(0, len(cadenamodif)):
+        variable = cadenamodif[x]
+        co = 2
+        let = ''
+        ban = 0
+        if (ord(variable[co]) > 64) and (ord(variable[co]) < 91):
+            while ban == 0:
+                if (ord(variable[co]) > 64) and (ord(variable[co]) < 91):
+                    for y in range(0, len(antecedentes)):
+                        if variable[co] == antecedentes[y]:
+                            if FIRST[y] == 'lambda':
+                                co = co + 2
+                            else:
+                                if FIRST[y] != '-':
+                                    band = 0
+                                    for z in range(len(let)):
+                                        if FIRST[y] == let[z]:
+                                            band = 1
+                                            break
+                                    if band == 0:
+                                        let = let + FIRST[y]
+                else:
+                    ban = 1
+                    let = let + variable[co]
+        if let != '':
+            FIRST[x] = let
 
 print(FIRST)
 print(antecedentes)
