@@ -1,13 +1,12 @@
 import re
-cadena = "A:b A\nA:a\nA:A B c\nA:lambda\nB:b"
+#cadena = "A:b A\nA:a\nA:A B c\nA:lambda\nB:b"
+cadena = "A:b\nA:e\nB:d\nB:lambda\nB:A p\nA:lambda\nC:f\nC:lambda\nS:A B C c"
 cadenaminmayus = "a", "b", "c", "d", "e", "l", "A", "B", "C", "D", "E"
 cadenamodif = cadena.split("\n")
 cadenafirst = []
 antecedentes = []
 variable = []
 FIRST = []
-
-"""        First           """
 
 """     First de los que el primer valor en el consecuente es un Terminal o lambda      """
 for x in range(len(cadenamodif)):
@@ -25,6 +24,7 @@ for x in range(len(cadenamodif)):
                 FIRST.insert(x, variable[0][1])
             else:
                 FIRST.insert(x, '-')
+print(FIRST)
 
 """     Calcula los First de los que el primer valor en el consecuente es un No Terminal  """
 conta = 0
@@ -42,12 +42,16 @@ while conta != 2:
                         if variable[co] == antecedentes[y]:
                             if FIRST[y] == 'lambda':
                                 co = co + 2
+                                ban = 0
+                                break
                             else:
                                 if FIRST[y] != '-':
                                     band = 0
+                                    ban = 1
                                     for z in range(len(let)):
                                         if FIRST[y] == let[z]:
                                             band = 1
+                                            conta = 2
                                             break
                                     if band == 0:
                                         let = let + FIRST[y]
@@ -56,7 +60,6 @@ while conta != 2:
                     let = let + variable[co]
         if let != '':
             FIRST[x] = let
-
 print(FIRST)
 print(antecedentes)
 
