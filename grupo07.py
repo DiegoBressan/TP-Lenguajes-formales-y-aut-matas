@@ -5,8 +5,10 @@ cadenaminmayus = "a", "b", "c", "d", "e", "l", "A", "B", "C", "D", "E"
 cadenamodif = cadena.split("\n")
 cadenafirst = []
 antecedentes = []
+NoTerminales = []
 variable = []
 FIRST = []
+FOLLOWS = []
 
 """     First de los que el primer valor en el consecuente es un Terminal o lambda      """
 for x in range(len(cadenamodif)):
@@ -24,7 +26,6 @@ for x in range(len(cadenamodif)):
                 FIRST.insert(x, variable[0][1])
             else:
                 FIRST.insert(x, '-')
-print(FIRST)
 
 """     Calcula los First de los que el primer valor en el consecuente es un No Terminal  """
 conta = 0
@@ -60,8 +61,57 @@ while conta != 2:
                     let = let + variable[co]
         if let != '':
             FIRST[x] = let
+
 print(FIRST)
 print(antecedentes)
+
+# Follows
+# Guardo los no terminales
+co = 0
+for x in range(len(cadenamodif)):
+    variable = cadenamodif[x]
+    if co == 0:
+        co = 1
+        NoTerminales.append(variable[0])
+        FOLLOWS.append('$')
+    else:
+        ban = 0
+        for z in range(len(NoTerminales)):
+            if NoTerminales[z] == variable[0]:
+                ban = 1
+                break
+        if ban == 0:
+            NoTerminales.append(variable[0])
+
+print(NoTerminales)
+
+# Calculo los Follows
+for x in range(len(NoTerminales)):
+    for y in range(len(cadenamodif)):
+        variable = cadenamodif[y]
+        co = 2
+        aux = (len(cadenamodif[y])) - 1
+        while co <= aux:
+            if NoTerminales[x] == variable[co]:
+                if (co + 2) > aux:
+                    for z in range(len(NoTerminales)):
+                        if NoTerminales[z][0] == variable[0]:
+                            let = let + FOLLOWS[z]
+                            break
+                else:
+                    if (ord(variable[co+2]) > 32 and ord(variable[co+2]) < 65) or (ord(variable[co+2]) > 90 and ord(variable[co+2]) < 127):
+                        let = let + variable[co+2]
+                    else:
+                        for z in range(len(antecedentes)):
+                            if antecedentes[z] == variable[co+2]:
+                                if FIRST[z] != 'lambda':
+                                    let = let + FIRST[z]
+                                else:
+                                    let = let #Falta hacer que pasa si el NT es lambda
+            co = co + 2
+    FOLLOWS.insert(x, let)
+
+print(FOLLOWS)
 
 class Gramatica():
 
