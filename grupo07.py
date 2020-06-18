@@ -1,6 +1,6 @@
 import re
-#cadena = "A:b A\nA:a\nA:A B c\nA:lambda\nB:b"
-cadena = "S:A B C c\nA:b\nA:e\nB:d\nB:lambda\nB:A p\nA:lambda\nC:f\nC:lambda"
+cadena = "A:b A\nA:a\nA:A B c\nA:lambda\nB:b"
+#cadena = "S:A B C c\nA:b\nA:e\nB:d\nB:lambda\nB:A p\nA:lambda\nC:f\nC:lambda"
 cadenamodif = cadena.split("\n")
 cadenafirst = []
 antecedentes = []
@@ -95,6 +95,7 @@ for x in range(len(NoTerminales)):
     for y in range(len(cadenamodif)):
         variable = cadenamodif[y]
         co = 2
+        cont = 0
         aux = (len(cadenamodif[y])) - 1
         while co <= aux:
             if NoTerminales[x] == variable[co]: #Si el No Terminal estaultimo guarda los FOLLOWS del No Terminal del antecedente
@@ -108,6 +109,7 @@ for x in range(len(NoTerminales)):
                         if variable[co + 2] not in let:
                             let = let + variable[co + 2]     #Guarda los datos si es un Terminal
                     else:
+                        banderita = 0
                         for z in range(len(antecedentes)):
                             if antecedentes[z] == variable[co + 2]:
                                 if FIRST[z] != 'lambda':
@@ -120,9 +122,22 @@ for x in range(len(NoTerminales)):
                                     if ban == 0:
                                         let = let + FIRST[z]
                                 else:
-                                    let = let  # Falta hacer que pasa si el NT es lambda
+                                    banderita = 1
+                        if banderita == 1:
+                            banderapatria = 0
+                            for n in range(len(let)):                     # Metodo burbuja para eliminar un elemento de la posicion, para que
+                                for m in range(len(FOLLOWS[cont])):       # al transcribir los follows del antecedente se incluyan y no se repitan
+                                    if FOLLOWS[cont][m] == let[n]:
+                                        aux = FOLLOWS[cont]
+                                        del aux[m]
+                                        let = let + aux
+                                        banderapatria = 1
+                            if banderapatria == 0:
+                                let = let + FOLLOWS[cont]
             co = co + 2
-    FOLLOWS[x] = let
+        cont = cont + 1
+    if let != "":
+        FOLLOWS[x] = let
 
 print(FOLLOWS)
 
