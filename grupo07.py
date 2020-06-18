@@ -1,7 +1,6 @@
 import re
 #cadena = "A:b A\nA:a\nA:A B c\nA:lambda\nB:b"
-cadena = "A:b\nA:e\nB:d\nB:lambda\nB:A p\nA:lambda\nC:f\nC:lambda\nS:A B C c"
-cadenaminmayus = "a", "b", "c", "d", "e", "l", "A", "B", "C", "D", "E"
+cadena = "S:A B C c\nA:b\nA:e\nB:d\nB:lambda\nB:A p\nA:lambda\nC:f\nC:lambda"
 cadenamodif = cadena.split("\n")
 cadenafirst = []
 antecedentes = []
@@ -86,30 +85,44 @@ for x in range(len(cadenamodif)):
 print(NoTerminales)
 
 # Calculo los Follows
+ban = 0
+for x in range(len(NoTerminales) - 1):
+    FOLLOWS.append('-')
+
+contador = 0
 for x in range(len(NoTerminales)):
+    let = ''
     for y in range(len(cadenamodif)):
         variable = cadenamodif[y]
         co = 2
         aux = (len(cadenamodif[y])) - 1
         while co <= aux:
-            if NoTerminales[x] == variable[co]:
+            if NoTerminales[x] == variable[co]: #Si el No Terminal estaultimo guarda los FOLLOWS del No Terminal del antecedente
                 if (co + 2) > aux:
                     for z in range(len(NoTerminales)):
                         if NoTerminales[z][0] == variable[0]:
                             let = let + FOLLOWS[z]
                             break
                 else:
-                    if (ord(variable[co+2]) > 32 and ord(variable[co+2]) < 65) or (ord(variable[co+2]) > 90 and ord(variable[co+2]) < 127):
-                        let = let + variable[co+2]
+                    if (ord(variable[co + 2]) > 32 and ord(variable[co + 2]) < 65) or (ord(variable[co + 2]) > 90 and ord(variable[co + 2]) < 127):
+                        if variable[co + 2] not in let:
+                            let = let + variable[co + 2]     #Guarda los datos si es un Terminal
                     else:
                         for z in range(len(antecedentes)):
-                            if antecedentes[z] == variable[co+2]:
+                            if antecedentes[z] == variable[co + 2]:
                                 if FIRST[z] != 'lambda':
-                                    let = let + FIRST[z]
+                                    conta = (len(let)) - 1
+                                    ban = 0
+                                    for x in range(conta):
+                                        if FIRST[z] in let:
+                                            ban = 1
+                                            break
+                                    if ban == 0:
+                                        let = let + FIRST[z]
                                 else:
-                                    let = let #Falta hacer que pasa si el NT es lambda
+                                    let = let  # Falta hacer que pasa si el NT es lambda
             co = co + 2
-    FOLLOWS.insert(x, let)
+    FOLLOWS[x] = let
 
 print(FOLLOWS)
 
