@@ -1,6 +1,6 @@
 import re
-cadena = "A:b A\nA:a\nA:A B c\nA:lambda\nB:b"
-#cadena = "S:A B C c\nA:b\nA:e\nB:d\nB:lambda\nB:A p\nA:lambda\nC:f\nC:lambda"
+#cadena = "A:b A\nA:a\nA:A B c\nA:lambda\nB:b"
+cadena = "S:A B C c\nA:b\nA:e\nB:d\nB:lambda\nB:A p\nA:lambda\nC:f\nC:lambda"
 cadenamodif = cadena.split("\n")
 cadenafirst = []
 antecedentes = []
@@ -10,6 +10,12 @@ FIRST = []
 FOLLOWS = []
 
 """     First de los que el primer valor en el consecuente es un Terminal o lambda      """
+for h in range(len(cadenamodif)):                                     #elimina espacio en blanco luego del :
+    if ord(cadenamodif[h][2]) == 32:
+        cadenamodif[h] = re.sub(r':.', '', cadenamodif[h])
+        cadenamodif[h] = cadenamodif[h][0:1] + ':' + cadenamodif[h][1:]
+
+print(cadenamodif)
 for x in range(len(cadenamodif)):
     if cadenamodif[x] is not None:
         antecedentes.insert(x, cadenamodif[x][0])
