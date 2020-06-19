@@ -8,8 +8,9 @@ NoTerminales = []
 variable = []
 FIRST = []
 FOLLOWS = []
+SELECT = []
 
-"""     First de los que el primer valor en el consecuente es un Terminal o lambda      """
+# First de los que el primer valor en el consecuente es un Terminal o lambda
 for h in range(len(cadenamodif)):                                     #elimina espacio en blanco luego del :
     if ord(cadenamodif[h][2]) == 32:
         cadenamodif[h] = re.sub(r':.', '', cadenamodif[h])
@@ -32,7 +33,7 @@ for x in range(len(cadenamodif)):
             else:
                 FIRST.insert(x, '-')
 
-"""     Calcula los First de los que el primer valor en el consecuente es un No Terminal  """
+# Calcula los First de los que el primer valor en el consecuente es un No Terminal
 conta = 0
 while conta != 2:
     conta = conta + 1
@@ -71,6 +72,7 @@ print(FIRST)
 print(antecedentes)
 
 # Follows
+
 # Guardo los no terminales
 co = 0
 for x in range(len(cadenamodif)):
@@ -146,6 +148,39 @@ for x in range(len(NoTerminales)):
         FOLLOWS[x] = let
 
 print(FOLLOWS)
+
+# SELECT
+# Crea la lista de los SELECT
+for x in range(len(FIRST)):
+    if FIRST[x] == 'lambda':
+        for y in range(len(NoTerminales)):
+            if NoTerminales[y] == antecedentes[x]:
+                SELECT.append(FOLLOWS[y])
+    else:
+        SELECT.append(FIRST[x])
+
+print(SELECT)
+
+# Se controla si es LL1
+buleano = 0
+for x in range(len(SELECT) - 1):
+    for y in range(len(SELECT) - 1):
+        if antecedentes[x] == antecedentes[y + 1]:
+            aux1 = len(SELECT[x]) - 1
+            aux2 = len(SELECT[y]) - 1
+            for t in range(aux1):
+                for z in range(aux2):
+                    if SELECT[t] == SELECT[z]:
+                        buleano = 1
+                        break
+                if buleano == 1:
+                    break
+        if buleano == 1:
+            break
+    if buleano == 1:
+        break
+
+print(buleano)
 
 class Gramatica():
 
