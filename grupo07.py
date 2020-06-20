@@ -1,6 +1,7 @@
 import re
 #cadena = "A:b A\nA:a\nA:A B c\nA:lambda\nB:b"
 #cadena = "S:A B C c\nA:b\nA:e\nB:d\nB:lambda\nB:A p\nA:lambda\nC:f\nC:lambda"
+cadenamodif = []
 
 class Gramatica():
 
@@ -35,21 +36,23 @@ class Gramatica():
 
         SELECT = self.select
         antecedentes = self.antecedentes
+        print(antecedentes)
         buleano = True
         for x in range(len(SELECT) - 1):
             for y in range(len(SELECT) - 1):
-                if antecedentes[x] == antecedentes[y + 1]:
-                    aux1 = len(SELECT[x]) - 1
-                    aux2 = len(SELECT[y]) - 1
-                    for t in range(aux1):
-                        for z in range(aux2):
-                            if SELECT[t] == SELECT[z]:
-                                buleano = False
+                if y >= x:
+                    if antecedentes[x] == antecedentes[y + 1]:
+                        aux1 = len(SELECT[x]) - 1
+                        aux2 = len(SELECT[y+1]) - 1
+                        for t in range(aux1):
+                            for z in range(aux2):
+                                if SELECT[x][t] == SELECT[y+1][z]:
+                                    buleano = False
+                                    break
+                            if buleano is False:
                                 break
-                        if buleano is False:
-                            break
-                if buleano is False:
-                    break
+                    if buleano is False:
+                        break
             if buleano is False:
                 break
 
@@ -75,14 +78,45 @@ class Gramatica():
             Representación de las reglas a aplicar para derivar la cadena
             utilizando la gramática.
         """
-        pass
+        SELECT = self.select
+        antecedentes = self.antecedentes
+        cadenamodif = self.gramatica
+        nose = 0
+        regla = []
+        if g.isLL1():
+            if nose == 0:
+                regla.append(cadenamodif[0])
+                nose = 1
+                for x in range(len(cadena)):
+                    if nose == 1:
+                        if cadena[x] is not None:
+                            for y in range(len(SELECT) - 1):
+                                if cadena[x] in SELECT[y]:
+                                    if antecedentes[y] == regla[nose - 1]:
+                                        variable = ''
+                                        for z in range(len(regla[nose] - 1)):
+                                            if regla[nose][z] == antecedentes[y]:
+                                                variable2 = ''
+                                                for t in range(len(cadenamodif[y] - 1)):
+                                                    if t > 1:
+                                                        variable2 = variable2 + cadenamodif[y][t]
+                                                variable = variable + variable2
+                                                break
+                                        regla.append(variable)
+                    else:
+                        nose = 0
+
+
+
+        print(regla)
+        return nose
 
     def calculo_antecedente(cadenamodif):
 
         antecedentes = []
         for x in range(len(cadenamodif)):
             if cadenamodif[x] is not None:
-                antecedentes.insert(x, cadenamodif[x][0])
+                antecedentes.append(cadenamodif[x][0])
 
         return antecedentes
 
@@ -252,3 +286,4 @@ class Gramatica():
 
 g = Gramatica('S:A\nA:B A\nA:lambda\nB:a B\nB:b')
 print(g.isLL1())
+print(g.parse('aaab$'))
