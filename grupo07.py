@@ -42,8 +42,8 @@ class Gramatica():
             for y in range(len(SELECT) - 1):
                 if y >= x:
                     if antecedentes[x] == antecedentes[y + 1]:
-                        aux1 = len(SELECT[x]) - 1
-                        aux2 = len(SELECT[y+1]) - 1
+                        aux1 = len(SELECT[x])
+                        aux2 = len(SELECT[y+1])
                         for t in range(aux1):
                             for z in range(aux2):
                                 if SELECT[x][t] == SELECT[y+1][z]:
@@ -82,44 +82,79 @@ class Gramatica():
         antecedentes = self.antecedentes
         cadenamodif = self.gramatica
         regla = []
-        if g.isLL1():
+
+        if g.isLL1(): # Controla si la gramatica es LL1, sino no realiza el parser
             regla.append(cadenamodif[0])
-            nose = 0
             cont = 0
-            for x in range(len(cadena)):
-                if cadena[x] == '$':
-                    break
+            p = len(cadena)
+            x = 0
+            while x < p:
+                aux = ''
+                if cadena[x] == '$': #Cuando encuentra el final, corta, si quedaron variables NoTerminales que son lambda los borra
+                    ban = 0
+                    variable2 = ''
+                    for h in range(len(regla[cont])):
+                        if ban == 1:
+                            variable2 = variable2 + regla[cont][h]
+                            if (ord(regla[cont][h]) < 65) or (ord(regla[cont][h]) > 90):
+                                aux = aux + regla[cont][h]
+                        else:
+                            if (regla[cont][h] == ':') or (regla[cont][h] == '>'):
+                                ban = 1
+                    if aux != variable2:
+                        variable = variable2 + '=>' + aux
+                        regla.append(variable)
+                    x = p
                 else:
-                    if ord(cadena[x]) != 32:
-                        aux = ''
-                        for q in range(len(regla[nose])):
-                            if q > 1:
-                                aux = aux + regla[nose][q]
+                    if ord(cadena[x]) != 32: # Controla que el caracter que se compara no sea un espacio
+                        ban = 0
+                        for q in range(len(regla[cont])):
+                            if ban == 1:
+                                aux = aux + regla[cont][q]
+                            else:
+                                if (regla[cont][q] == ':') or (regla[cont][q] == '>'):
+                                    ban = 1
+                        bandera = 0
                         for q in range(len(aux)):
                             for r in range(len(antecedentes)):
-                                if (aux[q] == antecedentes[r]) and (cadena[x] in SELECT[r]):
-                                    variable = ''
-                                    for z in range(len(regla[nose])):
-                                        if regla[nose][z] == antecedentes[r]:
-                                            variable2 = ''
-                                            for t in range(len(cadenamodif[r])):
-                                                if t > 1:
-                                                    variable2 = variable2 + cadenamodif[r][t]
-                                            variable = variable + variable2
-                                        else:
-                                            variable = variable + regla[nose][z]
-                                    regla.append(variable)
+                                if bandera == 1:
                                     break
-
-                nose = nose + 1
-
+                                else:
+                                    if (aux[q] == antecedentes[r]) and (cadena[x] in SELECT[r]):
+                                        variable = aux + '=>'
+                                        variable2 = ''
+                                        ban = 0
+                                        for z in range(len(regla[cont])):
+                                            if ban == 1:
+                                                if regla[cont][z] == antecedentes[r]:
+                                                    band = 0
+                                                    for t in range(len(cadenamodif[r])):
+                                                        if band == 1:
+                                                            variable2 = variable2 + cadenamodif[r][t]
+                                                        else:
+                                                            if (cadenamodif[r][t] == ':') or (cadenamodif[r][t] == '>'):
+                                                                band = 1
+                                                    variable = variable + variable2
+                                                    if cadena[x] in cadenamodif[r]:
+                                                        x = x + 1
+                                                else:
+                                                    variable = variable + regla[cont][z]
+                                            else:
+                                                if (regla[cont][z] == ':') or (regla[cont][z] == '>'):
+                                                    ban = 1
+                                        regla.append(variable)
+                                        bandera = 1
+                                        break
+                        cont = cont + 1
+                    else:
+                        x= x + 1
 
         retornar = ''
         for x in range(len(regla)):
             if x == 0:
                 retornar = regla[x]
             else:
-                retornar = retornar + ' => ' + regla[x]
+                retornar = retornar + ' ====> ' + regla[x]
 
         print(regla)
         return retornar
@@ -297,6 +332,6 @@ class Gramatica():
 
         return SELECT
 
-g = Gramatica('S:A\nA:B A\nA:lambda\nB:a B\nB:b')
+g = Gramatica('S:+ B\nS:- B\nS:d A\nB:d A\nA:d A\nA:. F\nA:e C\nA:lambda\nF:d G\nG:d G\nG:e G\nG:lambda\nX:+ H\nX:- H\nX:d D\nH:d D\nH:lambda\nE:lambda')
 print(g.isLL1())
-print(g.parse('aaab$'))
+#print(g.parse('b d $'))
