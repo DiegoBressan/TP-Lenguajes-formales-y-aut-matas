@@ -81,35 +81,48 @@ class Gramatica():
         SELECT = self.select
         antecedentes = self.antecedentes
         cadenamodif = self.gramatica
-        nose = 0
         regla = []
         if g.isLL1():
-            if nose == 0:
-                regla.append(cadenamodif[0])
-                nose = 1
-                for x in range(len(cadena)):
-                    if nose == 1:
-                        if cadena[x] is not None:
-                            for y in range(len(SELECT) - 1):
-                                if cadena[x] in SELECT[y]:
-                                    if antecedentes[y] == regla[nose - 1]:
-                                        variable = ''
-                                        for z in range(len(regla[nose] - 1)):
-                                            if regla[nose][z] == antecedentes[y]:
-                                                variable2 = ''
-                                                for t in range(len(cadenamodif[y] - 1)):
-                                                    if t > 1:
-                                                        variable2 = variable2 + cadenamodif[y][t]
-                                                variable = variable + variable2
-                                                break
-                                        regla.append(variable)
-                    else:
-                        nose = 0
+            regla.append(cadenamodif[0])
+            nose = 0
+            cont = 0
+            for x in range(len(cadena)):
+                if cadena[x] == '$':
+                    break
+                else:
+                    if ord(cadena[x]) != 32:
+                        aux = ''
+                        for q in range(len(regla[nose])):
+                            if q > 1:
+                                aux = aux + regla[nose][q]
+                        for q in range(len(aux)):
+                            for r in range(len(antecedentes)):
+                                if (aux[q] == antecedentes[r]) and (cadena[x] in SELECT[r]):
+                                    variable = ''
+                                    for z in range(len(regla[nose])):
+                                        if regla[nose][z] == antecedentes[r]:
+                                            variable2 = ''
+                                            for t in range(len(cadenamodif[r])):
+                                                if t > 1:
+                                                    variable2 = variable2 + cadenamodif[r][t]
+                                            variable = variable + variable2
+                                        else:
+                                            variable = variable + regla[nose][z]
+                                    regla.append(variable)
+                                    break
+
+                nose = nose + 1
 
 
+        retornar = ''
+        for x in range(len(regla)):
+            if x == 0:
+                retornar = regla[x]
+            else:
+                retornar = retornar + ' => ' + regla[x]
 
         print(regla)
-        return nose
+        return retornar
 
     def calculo_antecedente(cadenamodif):
 
