@@ -21,9 +21,6 @@ class Gramatica():
         self.antecedentes = Gramatica.calculo_antecedente(self.gramatica)
         self.select = Gramatica.calculo_select(self.gramatica)
 
-        #print(self.antecedentes)
-        #print(self.select)
-
     def isLL1(self):
         """Verifica si una gramática permite realizar derivaciones utilizando
            la técnica LL1.
@@ -36,7 +33,6 @@ class Gramatica():
 
         SELECT = self.select
         antecedentes = self.antecedentes
-        print(antecedentes)
         buleano = True
         for x in range(len(SELECT) - 1):
             for y in range(len(SELECT) - 1):
@@ -56,7 +52,6 @@ class Gramatica():
             if buleano is False:
                 break
 
-        #print(buleano)
         return buleano
 
     def parse(self, cadena):
@@ -154,9 +149,8 @@ class Gramatica():
             if x == 0:
                 retornar = regla[x]
             else:
-                retornar = retornar + ' ====> ' + regla[x]
+                retornar = retornar + ' => ' + regla[x]
 
-        print(regla)
         return retornar
 
     def calculo_antecedente(cadenamodif):
@@ -169,19 +163,17 @@ class Gramatica():
         return antecedentes
 
     def calculo_select(cadenamodif):
-
         NoTerminales = []
         FIRST = []
         FOLLOWS = []
         SELECT = []
         lista_antecedentes = Gramatica.calculo_antecedente(cadenamodif)
+
         # First de los que el primer valor en el consecuente es un Terminal o lambda
         for h in range(len(cadenamodif)):  # elimina espacio en blanco luego del :
             if ord(cadenamodif[h][2]) == 32:
                 cadenamodif[h] = re.sub(r':.', '', cadenamodif[h])
                 cadenamodif[h] = cadenamodif[h][0:1] + ':' + cadenamodif[h][1:]
-
-        #print(cadenamodif)
 
         for x in range(len(cadenamodif)):
             if cadenamodif[x] is not None:
@@ -236,9 +228,6 @@ class Gramatica():
                     if let != '':
                         FIRST[x] = let
 
-        print(FIRST)
-        #print(antecedentes)
-
         # Follows
 
         # Guardo los no terminales
@@ -257,8 +246,6 @@ class Gramatica():
                         break
                 if ban == 0:
                     NoTerminales.append(variable[0])
-
-        #print(NoTerminales)
 
         # Calculo los Follows
         ban = 0
@@ -316,8 +303,6 @@ class Gramatica():
             if let != "":
                 FOLLOWS[x] = let
 
-        print(FOLLOWS)
-
         # SELECT
         # Crea la lista de los SELECT
         for x in range(len(FIRST)):
@@ -328,10 +313,8 @@ class Gramatica():
             else:
                 SELECT.append(FIRST[x])
 
-        print(SELECT)
-
         return SELECT
 
-g = Gramatica('S:+ B\nS:- B\nS:d A\nB:d A\nA:d A\nA:. F\nA:e C\nA:lambda\nF:d G\nG:d G\nG:e G\nG:lambda\nX:+ H\nX:- H\nX:d D\nH:d D\nH:lambda\nE:lambda')
+g = Gramatica('S:A\nA:B A\nA:lambda\nB:a B\nB:b')
 print(g.isLL1())
-#print(g.parse('b d $'))
+print(g.parse('a a a b $'))
