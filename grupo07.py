@@ -315,6 +315,6 @@ class Gramatica():
 
         return SELECT
 
-g = Gramatica('S:A\nA:B A\nA:lambda\nB:a B\nB:b')
-print(g.isLL1())
-print(g.parse('a a a b $'))
+#g = Gramatica('S:A\nA:B A\nA:lambda\nB:a B\nB:b')
+#print(g.isLL1())
+#print(g.parse('a a a b $'))
